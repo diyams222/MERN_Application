@@ -4,9 +4,13 @@ import "./Patient.css";
 function Patient() {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [error, setError] = useState("");
 
   const fetchPatients = async () => {
+    setLoading(true);
+    setError("");
+
     try {
       const response = await fetch("http://localhost:5000/api/patients");
 
@@ -18,6 +22,8 @@ function Patient() {
       setPatients(data);
     } catch (error) {
       setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,7 +32,7 @@ function Patient() {
   }, []);
 
   const syncPatients = async () => {
-    setLoading(true);
+    setSyncing(true);
     setError("");
 
     try {
@@ -49,7 +55,7 @@ function Patient() {
     } catch (error) {
       setError(error.message);
     } finally {
-      setLoading(false);
+      setSyncing(false);
     }
   };
 
@@ -57,8 +63,8 @@ function Patient() {
     <div className="container">
       <h1>Patient Management System</h1>
 
-      <button onClick={syncPatients} disabled={loading}>
-        {loading ? "Syncing..." : "Sync Patients"}
+      <button onClick={syncPatients} disabled={loading || syncing}>
+        {syncing ? "Syncing..." : "Sync Patients"}
       </button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
@@ -73,13 +79,18 @@ function Patient() {
             <th>Gender</th>
             <th>Age</th>
             <th>Mobile</th>
-            <th>Email</th>
             <th>Address</th>
           </tr>
         </thead>
 
         <tbody>
-          {patients.length > 0 ? (
+          {loading ? (
+            <tr>
+              <td colSpan="6" style={{ textAlign: "center" }}>
+                Loading patients...
+              </td>
+            </tr>
+          ) : patients.length > 0 ? (
             patients.map((patient) => (
               <tr key={patient._id}>
                 <td>{patient.registration_id || "-"}</td>
@@ -87,13 +98,12 @@ function Patient() {
                 <td>{patient.gender || "-"}</td>
                 <td>{patient.age ?? "-"}</td>
                 <td>{patient.mobile_no || "-"}</td>
-                <td>{patient.email || "-"}</td>
                 <td>{patient.address || "-"}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>
+              <td colSpan="6" style={{ textAlign: "center" }}>
                 No patients found
               </td>
             </tr>

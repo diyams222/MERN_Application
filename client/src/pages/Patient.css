@@ -30,12 +30,12 @@ h1 {
 h2 {
   margin-top: 30px;
   margin-bottom: 20px;
-  color: #334155;
+  color: #3973c5;
   font-size: 22px;
 }
 
 button {
-  background-color: #2563eb;
+  background-color: #2e58b9;
   color: white;
   padding: 12px 24px;
   border: none;
@@ -63,7 +63,7 @@ table {
 }
 
 thead {
-  background-color: #2563eb;
+  background-color: #2363ed;
   color: white;
 }
 
